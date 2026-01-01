@@ -1,21 +1,29 @@
-# Name of the workflow, visible in the GitHub Actions tab
-name: Hello World Workflow
+name: Build and Test Pipeline
 
-# Controls when the workflow is triggered.
-# This runs the workflow when someone pushes code to the 'main' branch.
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-# A workflow run is made up of one or more jobs.
 jobs:
-  # This defines a job named "say-hello".
-  say-hello:
-    # The type of machine (runner) the job will run on.
+  build-test:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job.
     steps:
-      # A step to run a single command.
-      - name: Run a simple "Hello, world!" script
-        run: echo "Hello, world!"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest
+
+      - name: Run tests
+        run: |
+          pytest
+
